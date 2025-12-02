@@ -5,7 +5,6 @@ RUN apk add --no-cache \
     git \
     go \
     gcc \
-    musl-dev \
     && go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest \
     && /root/go/bin/xcaddy build v2.10.2 \
         --with github.com/abiosoft/caddy-exec \
