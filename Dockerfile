@@ -12,7 +12,7 @@ RUN apk add --no-cache \
 
 # 下载并安装 Go 1.25.4（稳定版）
 ENV GO_VERSION=1.25.4
-ENV GO_ARCH=amd64  # 改成 arm64 如果是 ARM
+ENV GO_ARCH=amd64
 RUN curl -sSL -o /tmp/go.tar.gz https://go.dev/dl/go${GO_VERSION}.linux-${GO_ARCH}.tar.gz \
     && tar -C /usr/local -xzf /tmp/go.tar.gz \
     && rm /tmp/go.tar.gz
