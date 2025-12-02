@@ -1,0 +1,22 @@
+:80 {
+    log {
+        output stderr
+        level INFO
+    }
+
+    @uuid {
+        path_regexp ^/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})\.html$
+    }
+
+    handle @uuid {
+        exec /usr/local/bin/vmess.sh {host} {path}
+        respond {exec.stdout} 200 {
+            header Content-Type text/plain; charset=utf-8
+            header Cache-Control no-store, no-cache, must-revalidate
+        }
+    }
+
+    handle {
+        respond `订阅地址：http://{host}/你的UUID.html` 200
+    }
+}
