@@ -1,20 +1,23 @@
-FROM alpine:3.20
+# —— 修复版：Alpine 3.22 + Go 1.25 + 静态构建，带 exec 模块 ——
+FROM alpine:3.22
 
-# 安装系统依赖 + 编译工具（一次性）
+# 安装编译依赖（Go 1.25 已内置）
 RUN apk add --no-cache \
     git \
-    go \
+    go=1.25.* \
     gcc \
+    musl-dev \
+    && go clean -modcache \
     && go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest \
-    && /root/go/bin/xcaddy build v2.10.2 \
+    && xcaddy build v2.10.2 \
         --with github.com/abiosoft/caddy-exec \
         --with github.com/caddyserver/forwardproxy \
-    && mv caddy /usr/bin/caddy \
+        --output /usr/bin/caddy \
     && chmod +x /usr/bin/caddy \
     && apk del git go gcc musl-dev \
-    && rm -rf /root/go /root/.cache
+    && rm -rf /root/go /root/.cache /go/pkg/mod
 
-# 复制你的 Caddyfile 和 vmess.sh 脚本（下面示例用最稳的 exec 版）
+# 复制配置文件和脚本
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY vmess.sh /usr/local/bin/vmess.sh
 RUN chmod +x /usr/local/bin/vmess.sh
